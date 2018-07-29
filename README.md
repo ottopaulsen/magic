@@ -4,7 +4,7 @@ This is a documentation repository for my MagicMirror projects.
 
 I have created a couple of magic mirros based on [MagicMirror2](https://magicmirror.builders/). Actually one of them is not a mirror, just a screen hanging in my home kitchen in a corner up under the ceiling. 
 
-To adapt the magic mirror concept to my own needs, I have created several modules on my own. These can be found in other repositories here:
+To adapt the magic mirror concept to my own needs, I have created some modules on my own. These can be found in other repositories here:
 
 * [MMM-NesteBussAtB](https://github.com/ottopaulsen/MMM-NesteBussAtB) is used to show the next buses leaving nearby bus stops in Trondheim.
 * [MMM-MQTT](https://github.com/ottopaulsen/MMM-MQTT) is used to display contents from MQTT messages. I use it to display data from my smoke cabinet. See my [Smoky](https://github.com/ottopaulsen/Smoky) repository.
@@ -18,10 +18,10 @@ The problem could have been solved a lot easier than I have done it, for example
 
 ![Magic Message Architecture](img/MagicMessageArchitecture.png)
 
-* An mobile app to send the message. Here I am using Ionic, learning both mobile development and Angular.
-* A Firebase functions module used to receive the messages, as well as some other functions.
-* A Firestore database to save messages, so that they can retain mirror restarts.
-* A MagicMirror module to display the messages directly frm the Firestore database.
+* A mobile app to send the message. Here I am using Ionic, learning some mobile development and expanding my Angular competence.
+* A Firebase functions module used to send the messages, register and list screens. 
+* A Firestore database to save messages, so that they can retain through mirror restarts.
+* A MagicMirror module (MMM-MessageToMirror) to display the messages directly from the Firestore database.
 
 This makes a rather complicated architecture, and of course, a lot more complicated than absolutely necessary. The reason is just that I wanted to learn those things. But it is kind of cool.
 
@@ -58,19 +58,19 @@ service cloud.firestore {
 }
 ```
 
-The `request.auth.uid == userId` rules makes sure that writing only can be donw through the firebase functions. (Hopefully...)
+The `request.auth.uid == userId` rules makes sure that writing only can be done through the firebase functions. (Hopefully...)
 
 ### Security
 
-If I want to publish the MagicMessage module, it has to have some level of security. At the same time I don't want to make it too complicated to set up and use it. The solution is as follows:
+If I want to publish the MMM-MessageToMirror module using my own server components, it has to have some level of security. At the same time I don't want to make it too complicated to set up and use it. The solution is as follows:
 
-* The user has to log in to be able to send messages. I use Google authentication for this, so you must have a Google account to use this. Through this, I get the email address. This is used to configure who are allowed to send messages to the mirror. It is also used to let you select which mirror you want to send message to, in case you have ccess to ultiple mirrors.
+* The user has to log in to be able to send messages. I use Google authentication for this, so you must have a Google account to use this. Through this, I get the email address. This is used to configure who are allowed to send messages to the mirror. It is also used to let you select which mirror you want to send message to, in case you have access to multiple mirrors.
 
 * The screen is registering at startup, with a unique id. Through the module configuration, this id is connected to your email address. This is stored in the firestore database through a firebase function. This function is open, so the screen can register itself with no authentication. Of course, here is a potential problem, but it there is not much use in registering a lot of fake screens, other than fucking up the system so that I have to close it down.
 
 * The database is secured so that only the firebase functions can write to it, securing that only the legal stuff is written. In order to read messages, you have to know the unique screen id, and only the screen knows that, so it should be safe enough.
 
-Currently you will be using my firebase function and my frestore database if you are using this solution, unless you set up your own server. If the usage is climbing to a level where I have to stat paying Google for this, I may have to close it down. That may happen without any notice.
+Currently you will be using my firebase function and my firestore database if you are using this solution, unless you set up your own server. If the usage is climbing to a level where I have to start paying Google for this, I may have to close it down. That may happen without any notice.
 
 
 
